@@ -88,7 +88,6 @@ function keepOptionalPropsTest() {
     id: null
   });
 
-  // @ts-expect-error no way for now https://github.com/microsoft/TypeScript/issues/32562
   expectType<TypeEqual<{id?: string}, TypeOfShape<typeof shapeFull>>>(true);
 }
 
