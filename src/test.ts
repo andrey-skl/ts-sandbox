@@ -11,7 +11,7 @@ function basicTest() {
   const shape = pickByShape({} as MyType, {
     id: null
   });
-  expectType<TypeEqual<{id: boolean}, typeof shape._T>>(true);
+  expectType<TypeEqual<{id: boolean}, typeof shape._Type>>(true);
 }
 
 function nestedTest() {
@@ -22,7 +22,7 @@ function nestedTest() {
   const shapeFull = pickByShape({} as MyType, {
     nested: null
   });
-  expectType<TypeEqual<{nested: {id: string}}, typeof shapeFull._T>>(true);
+  expectType<TypeEqual<{nested: {id: string}}, typeof shapeFull._Type>>(true);
 }
 
 function nestedPartialTest() {
@@ -33,7 +33,20 @@ function nestedPartialTest() {
   const shapeFull = pickByShape({} as MyType, {
     nested: {name: null}
   });
-  expectType<TypeEqual<{nested: {name: string}}, typeof shapeFull._T>>(true);
+  expectType<TypeEqual<{nested: {name: string}}, typeof shapeFull._Type>>(true);
+}
+
+function keepNullableTest() {
+  type MyType = {
+    id: boolean;
+    nested: null | {id: string}
+  };
+  const shapeFull = pickByShape({} as MyType, {
+    nested: null
+  });
+  expectType<
+    TypeEqual<{nested: null | {id: string}}, typeof shapeFull._Type>
+  >(true);
 }
 
 function arrayTypes() {
@@ -42,7 +55,7 @@ function arrayTypes() {
     foo: {id: null}
   });
 
-  expectType<TypeEqual<{foo: {id: string}[]}, typeof sss._T>>(true);
+  expectType<TypeEqual<{foo: {id: string}[]}, typeof sss._Type>>(true);
 }
 
 function nullableArrayTypes() {
@@ -51,5 +64,5 @@ function nullableArrayTypes() {
     foo: null
   });
 
-  expectType<TypeEqual<{foo: string}[], typeof sss._T>>(true);
+  expectType<TypeEqual<null | {foo: string}[], typeof sss._Type>>(true);
 }
