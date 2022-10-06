@@ -1,5 +1,6 @@
 import { expectType, TypeEqual } from "ts-expect";
 import { pickByShape } from "./sandbox";
+import { ExpandRecursively } from "./utils";
 
 
 function basicTest() {
@@ -36,10 +37,19 @@ function nestedPartialTest() {
 }
 
 function arrayTypes() {
+  type MyType = {foo: {id: string, name: string}[]};
+  const sss = pickByShape({} as MyType, {
+    foo: {id: null}
+  });
+
+  expectType<TypeEqual<{foo: {id: string}[]}, typeof sss._T>>(true);
+}
+
+function nullableArrayTypes() {
   type NullableArray = null | {foo: string}[];
   const sss = pickByShape({} as NullableArray, {
     foo: null
   });
 
-  expectType<TypeEqual<{foo: string}, typeof sss._T>>(true);
+  expectType<TypeEqual<{foo: string}[], typeof sss._T>>(true);
 }

@@ -8,17 +8,17 @@ type DeepPartial<T> = T extends object ? {
   [P in keyof T]?: DeepPartial<T[P]>;
 } : T;
 
-type SubShape<Obj, Ref> =
-  Ref extends unknown[]
-  ? SubShape<Obj, Ref[0]>
+type NarrowByShape<Shape, T> =
+  NonNullable<T> extends unknown[]
+  ? NarrowByShape<Shape, NonNullable<T>[0]>[]
   : {
-      [P in keyof Obj]: Ref extends object
-        ? P extends keyof Ref
-          ? Obj[P] extends object ? SubShape<Obj[P], Ref[P]> : Ref[P]
+      [K in keyof Shape]: T extends object
+        ? K extends keyof T
+          ? Shape[K] extends object ? NarrowByShape<Shape[K], T[K]> : T[K]
           : never
         : never
     }
 
 export function pickByShape<T, S extends DeepPartial<FieldsQuery<T>>>(type: T, schema: S) {
-  return schema as S & {_T: SubShape<S, T>};
+  return schema as S & {_T: NarrowByShape<S, T>};
 }
