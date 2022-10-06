@@ -1,6 +1,5 @@
 import { expectType, TypeEqual } from "ts-expect";
-import { FieldsQuery, pickByShape } from "./sandbox";
-import { ExpandRecursively } from "./utils";
+import { TypeOfShape, pickByShape } from "./sandbox";
 
 
 function basicTest() {
@@ -11,7 +10,7 @@ function basicTest() {
   const shape = pickByShape({} as MyType, {
     id: null
   });
-  expectType<TypeEqual<{id: boolean}, typeof shape._Type>>(true);
+  expectType<TypeEqual<{id: boolean}, TypeOfShape<typeof shape>>>(true);
 }
 
 function wrongKeyTest() {
@@ -22,7 +21,7 @@ function wrongKeyTest() {
     id: null,
     wrong: null
   });
-  expectType<TypeEqual<{id: boolean, wrong: never}, typeof shape._Type>>(true);
+  expectType<TypeEqual<{id: boolean, wrong: never}, TypeOfShape<typeof shape>>>(true);
 }
 
 function nestedTest() {
@@ -33,7 +32,7 @@ function nestedTest() {
   const shapeFull = pickByShape({} as MyType, {
     nested: null
   });
-  expectType<TypeEqual<{nested: {id: string}}, typeof shapeFull._Type>>(true);
+  expectType<TypeEqual<{nested: {id: string}}, TypeOfShape<typeof shapeFull>>>(true);
 }
 
 function nestedWrongKeyTest() {
@@ -47,7 +46,7 @@ function nestedWrongKeyTest() {
       wrongKey: null
     }
   });
-  expectType<TypeEqual<{nested: {id: string, wrongKey: never}}, typeof shapeFull._Type>>(true);
+  expectType<TypeEqual<{nested: {id: string, wrongKey: never}}, TypeOfShape<typeof shapeFull>>>(true);
 }
 
 function nestedPartialTest() {
@@ -58,7 +57,7 @@ function nestedPartialTest() {
   const shapeFull = pickByShape({} as MyType, {
     nested: {name: null}
   });
-  expectType<TypeEqual<{nested: {name: string}}, typeof shapeFull._Type>>(true);
+  expectType<TypeEqual<{nested: {name: string}}, TypeOfShape<typeof shapeFull>>>(true);
 }
 
 function keepNullableTest() {
@@ -70,7 +69,7 @@ function keepNullableTest() {
     nested: null
   });
   expectType<
-    TypeEqual<{nested: null | {id: string}}, typeof shapeFull._Type>
+    TypeEqual<{nested: null | {id: string}}, TypeOfShape<typeof shapeFull>>
   >(true);
 }
 
@@ -84,7 +83,7 @@ function keepOptionalPropsTest() {
   });
 
   // @ts-expect-error no way for now https://github.com/microsoft/TypeScript/issues/32562
-  expectType<TypeEqual<{id?: string}, typeof shapeFull._Type>>(true);
+  expectType<TypeEqual<{id?: string}, TypeOfShape<typeof shapeFull>>>(true);
 }
 
 function arrayTypes() {
@@ -93,7 +92,7 @@ function arrayTypes() {
     foo: {id: null}
   });
 
-  expectType<TypeEqual<{foo: {id: string}[]}, typeof sss._Type>>(true);
+  expectType<TypeEqual<{foo: {id: string}[]}, TypeOfShape<typeof sss>>>(true);
 }
 
 function nullableArrayTypes() {
@@ -102,5 +101,5 @@ function nullableArrayTypes() {
     foo: null
   });
 
-  expectType<TypeEqual<null | {foo: string}[], typeof sss._Type>>(true);
+  expectType<TypeEqual<null | {foo: string}[], TypeOfShape<typeof sss>>>(true);
 }

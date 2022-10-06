@@ -1,26 +1,30 @@
 
 export type FieldsQuery<Schema> =
-  Schema extends unknown[] ? FieldsQuery<Schema[number]> | null
-    : Schema extends object ? { [P in keyof Schema]: FieldsQuery<Schema[P]> } | null
-      : null;
+Schema extends unknown[] ? FieldsQuery<Schema[number]> | null
+  : Schema extends object ? { [P in keyof Schema]: FieldsQuery<Schema[P]> } | null
+    : null;
 
 type DeepPartial<T> = T extends object ? {
-  [P in keyof T]?: DeepPartial<T[P]>;
+[P in keyof T]?: DeepPartial<T[P]>;
 } : T;
+
+export type PartialQuery<T> = DeepPartial<FieldsQuery<T>>;
 
 type ExtractOptionalTypes<T> = Exclude<T, NonNullable<T>>;
 
-export type NarrowByShape<Shape, T> =
-  NonNullable<T> extends unknown[]
-  ? ExtractOptionalTypes<T> | NarrowByShape<Shape, NonNullable<T>[0]>[]
+export type NarrowByQuery<Q, T> =
+NonNullable<T> extends unknown[]
+  ? ExtractOptionalTypes<T> | NarrowByQuery<Q, NonNullable<T>[0]>[]
   : {
-      [K in keyof Shape]: T extends object
-        ? K extends keyof T
-          ? Shape[K] extends object ? NarrowByShape<Shape[K], T[K]> : T[K]
-          : never
+    [K in keyof Q]: T extends object
+      ? K extends keyof T
+        ? Q[K] extends object ? NarrowByQuery<Q[K], T[K]> : T[K]
         : never
-    }
+      : never
+  }
 
-export function pickByShape<T, S extends DeepPartial<FieldsQuery<T>>>(type: T, schema: S) {
-  return schema as S & {_Type: NarrowByShape<S, T>};
+export function pickByShape<T, Q extends PartialQuery<T>>(type: T, query: Q) {
+return query as Q & {[k: symbol]: NarrowByQuery<Q, T> };
 }
+
+export type TypeOfShape<S> = S extends {[k: symbol]: infer T} ? T : never;
