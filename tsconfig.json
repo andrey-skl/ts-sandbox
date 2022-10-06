@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "strict": true,
+    "outFile": "./build/build.js"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
