@@ -1,6 +1,6 @@
 
 export type FieldsQuery<Schema> =
-Schema extends unknown[] ? FieldsQuery<Schema[number]> | null
+Schema extends unknown[] ? FieldsQuery<Schema[number]>
   : Schema extends object ? { [P in keyof Schema]: FieldsQuery<Schema[P]> }
     : null;
 
