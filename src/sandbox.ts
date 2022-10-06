@@ -8,18 +8,6 @@ type DeepPartial<T> = T extends object ? {
 [P in keyof T]?: DeepPartial<T[P]>;
 } : T;
 
-type A = {id: string};
-type F = DeepPartial<A>;
-type V<T extends F> = T;
-
-export function test<T, Q extends F>(type: T, query: Q) {
-  return query as Q & {[k: symbol]: T };
-}
-
-const e = {id: 'asd', boo: null};
-
-test({} as A, {id: 'as', boo: null});
-
 export type PartialQuery<T> = DeepPartial<FieldsQuery<T>>;
 
 type ExtractOptionalTypes<T> = Exclude<T, NonNullable<T>>;
