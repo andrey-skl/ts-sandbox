@@ -4,7 +4,8 @@
     "moduleResolution": "node",
     "strict": true,
     "outFile": "./build/build.js",
-    "noErrorTruncation": true
+    "noErrorTruncation": true,
+    "lib": ["DOM", "ES2022"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
