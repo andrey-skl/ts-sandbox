@@ -10,6 +10,12 @@ function basicTest() {
   const shape = pickByShape({} as MyType, {
     id: null
   });
+  shape.id;
+
+  const f: TypeOfShape<typeof shape> = {
+    id: true
+  };
+  console.log(f.id);
   expectType<TypeEqual<{id: boolean}, TypeOfShape<typeof shape>>>(true);
 }
 
@@ -21,7 +27,7 @@ function wrongKeyTest() {
     id: null,
     wrong: null
   });
-  expectType<TypeEqual<{id: boolean, wrong: never}, TypeOfShape<typeof shape>>>(true);
+  expectType<TypeEqual<{id: boolean}, TypeOfShape<typeof shape>>>(true);
 }
 
 function nestedTest() {
@@ -43,10 +49,10 @@ function nestedWrongKeyTest() {
   const shapeFull = pickByShape({} as MyType, {
     nested: {
       id: null,
-      wrongKey: null
+      wrong: null
     }
   });
-  expectType<TypeEqual<{nested: {id: string, wrongKey: never}}, TypeOfShape<typeof shapeFull>>>(true);
+  expectType<TypeEqual<{nested: null | {id: string}}, TypeOfShape<typeof shapeFull>>>(true);
 }
 
 function nestedPartialTest() {
