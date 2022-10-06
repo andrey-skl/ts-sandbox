@@ -1,5 +1,5 @@
 import { expectType, TypeEqual } from "ts-expect";
-import { pickByShape } from "./sandbox";
+import { FieldsQuery, pickByShape } from "./sandbox";
 import { ExpandRecursively } from "./utils";
 
 
@@ -14,6 +14,17 @@ function basicTest() {
   expectType<TypeEqual<{id: boolean}, typeof shape._Type>>(true);
 }
 
+function wrongKeyTest() {
+  type MyType = {
+    id: boolean;
+  };
+  const shape = pickByShape({} as MyType, {
+    id: null,
+    wrong: null
+  });
+  expectType<TypeEqual<{id: boolean, wrong: never}, typeof shape._Type>>(true);
+}
+
 function nestedTest() {
   type MyType = {
     id: boolean;
@@ -23,6 +34,20 @@ function nestedTest() {
     nested: null
   });
   expectType<TypeEqual<{nested: {id: string}}, typeof shapeFull._Type>>(true);
+}
+
+function nestedWrongKeyTest() {
+  type MyType = {
+    id: boolean;
+    nested: null | {id: string}
+  };
+  const shapeFull = pickByShape({} as MyType, {
+    nested: {
+      id: null,
+      wrongKey: null
+    }
+  });
+  expectType<TypeEqual<{nested: {id: string, wrongKey: never}}, typeof shapeFull._Type>>(true);
 }
 
 function nestedPartialTest() {
@@ -47,6 +72,19 @@ function keepNullableTest() {
   expectType<
     TypeEqual<{nested: null | {id: string}}, typeof shapeFull._Type>
   >(true);
+}
+
+function keepOptionalPropsTest() {
+  type MyType = {
+    id?: string;
+  };
+
+  const shapeFull = pickByShape({} as MyType, {
+    id: null
+  });
+
+  // @ts-expect-error no way for now https://github.com/microsoft/TypeScript/issues/32562
+  expectType<TypeEqual<{id?: string}, typeof shapeFull._Type>>(true);
 }
 
 function arrayTypes() {
