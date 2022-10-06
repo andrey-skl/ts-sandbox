@@ -36,7 +36,7 @@ function nestedTest() {
     nested: {id: string}
   };
   const shapeFull = pickByShape({} as MyType, {
-    nested: null
+    nested: {id: null}
   });
   expectType<TypeEqual<{nested: {id: string}}, TypeOfShape<typeof shapeFull>>>(true);
 }

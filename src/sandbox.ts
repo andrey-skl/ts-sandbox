@@ -1,7 +1,7 @@
 
 export type FieldsQuery<Schema> =
 Schema extends unknown[] ? FieldsQuery<Schema[number]> | null
-  : Schema extends object ? { [P in keyof Schema]: FieldsQuery<Schema[P]> } | null
+  : Schema extends object ? { [P in keyof Schema]: FieldsQuery<Schema[P]> }
     : null;
 
 type DeepPartial<T> = T extends object ? {
