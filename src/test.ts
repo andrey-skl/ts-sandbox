@@ -35,4 +35,11 @@ function nestedPartialTest() {
   expectType<TypeEqual<{nested: {name: string}}, typeof shapeFull._T>>(true);
 }
 
+function arrayTypes() {
+  type NullableArray = null | {foo: string}[];
+  const sss = pickByShape({} as NullableArray, {
+    foo: null
+  });
 
+  expectType<TypeEqual<{foo: string}, typeof sss._T>>(true);
+}
