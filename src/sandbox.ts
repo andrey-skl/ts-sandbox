@@ -19,24 +19,6 @@ type SubShape<Obj, Ref> =
         : never
     }
 
-function pickByShape<T, S extends DeepPartial<FieldsQuery<T>>>(type: T, schema: S) {
+export function pickByShape<T, S extends DeepPartial<FieldsQuery<T>>>(type: T, schema: S) {
   return schema as S & {_T: SubShape<S, T>};
 }
-
-
-type MyType = {
-  id: boolean;
-  nullable: null | { foo: string }[];
-  subProp: {
-    id: string;
-  };
-  arr: {required: boolean; name: string}[];
-};
-const shape = pickByShape({} as MyType, {
-  nullable: {foo: null}
-});
-
-export type MyNarrowedType = typeof shape._T;
-
-
-
